@@ -50,6 +50,10 @@ public class BinaryRCGWriterGF implements GrammarWriter<BinaryRCG> {
         s = s.replace("$", "");
         s = s.replace("(", "_LBR_");
         s = s.replace(")", "_RBR_");
+        s = s.replace("[", "_LSQBR_");
+        s = s.replace("]", "_RSQBR_");
+        s = s.replace("*", "_STAR_");
+        s = s.replace("|", "_PIPE_");
         s = s.replace(".", "_PUNCT_");
         s = s.replace(",", "_COMMA_");
         s = s.replace("--", "_MDASH_");

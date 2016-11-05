@@ -51,6 +51,10 @@ public class RCGWriterGF implements GrammarWriter<RCG> {
 	s = s.replace("$", "");
 	s = s.replace("(", "LBR");
 	s = s.replace(")", "RBR");
+	s = s.replace("[", "_LSQBR_");
+	s = s.replace("]", "_RSQBR_");
+	s = s.replace("*", "_STAR_");
+	s = s.replace("|", "_PIPE_");
 	s = s.replace(".", "PUNCT");
 	s = s.replace(",", "COMMA");
 	s = s.replace("--", "MDASH");
