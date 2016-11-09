@@ -1,24 +1,24 @@
 /*******************************************************************************
  * File RCGWriterGF.java
- * 
+ *
  * Authors:
  *    Wolfgang Maier
- *    
+ *
  * Copyright:
  *    Wolfgang Maier, 2013
- * 
+ *
  * This file is part of rparse, see <www.wolfgang-maier.net/rparse>.
- * 
+ *
  * rparse is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free 
  * Software Foundation; either version 2 of the License, or (at your option) 
  * any later version.
- * 
+ *
  * rparse is distributed in the hope that it will be useful, but WITHOUT ANY 
  * WARRANTY; without even the implied warranty of MERCHANTABILITY 
  * or FITNESS FOR A PARTICULAR PURPOSE.  See the  GNU General Public 
  * License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License along 
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
@@ -42,27 +42,29 @@ import de.tuebingen.rparse.treebank.lex.LexiconConstants;
 /**
  * Write out an RCG without diagnostic fields in Grammatical Framework format
  * (includes abstract and concrete syntax, as well as prob file)
- * 
+ *
  * @author wmaier
  */
 public class RCGWriterGF implements GrammarWriter<RCG> {
 
     private String escape(String s) {
 	s = s.replace("$", "");
-	s = s.replace("(", "LBR");
-	s = s.replace(")", "RBR");
+    s = s.replace("(", "_LBR_");
+    s = s.replace(")", "_RBR_");
 	s = s.replace("[", "_LSQBR_");
 	s = s.replace("]", "_RSQBR_");
 	s = s.replace("*", "_STAR_");
 	s = s.replace("|", "_PIPE_");
-	s = s.replace(".", "PUNCT");
-	s = s.replace(",", "COMMA");
-	s = s.replace("--", "MDASH");
-	s = s.replace("-", "DASH");
-	s = s.replace("/", "SLASH");
-	s = s.replace("\\", "BACKSLASH");
-	s = s.replace("\"", "DQ");
-	s = s.replace("\'", "SQ");
+    s = s.replace(".", "_PUNCT_");
+    s = s.replace(",", "_COMMA_");
+    s = s.replace("--", "_MDASH_");
+    s = s.replace("-", "_DASH_");
+    s = s.replace("/", "_SLASH_");
+    s = s.replace("\\", "_BACKSLASH_");
+    s = s.replace("\"", "_DQ_");
+    s = s.replace("\'", "_SQ_");
+    s = s.replace("@", "_AT_");
+    s = s.replace("^", "_HAT_");
 	return s;
     }
 
@@ -147,7 +149,7 @@ public class RCGWriterGF implements GrammarWriter<RCG> {
 
 	abstractw.write("flags \n");
 	abstractw.write("startcat=VROOT1; \n\n");
-	
+
 	/*
 	NP1([0][1][2][3]) --> NP1'([0]) PP2([1],[3]) PP1([2])
 	
@@ -169,7 +171,7 @@ public class RCGWriterGF implements GrammarWriter<RCG> {
 	    lhs = escape(lhs);
             for (Clause c : g.getClausesByLhsLabel().get(labeln)) {
 
-	        // abstract 
+	        // abstract
 		String funName = "fun" + String.valueOf(namecnt++);
 		String fun = "";
 		for (int i = 0; i < c.rhsargs.length; ++i) {
@@ -181,13 +183,13 @@ public class RCGWriterGF implements GrammarWriter<RCG> {
 
 		// prob
                 probw.write(funName + " " + c.getScore() + "\n");
-		
+
 		// concrete lincat + abstract cat
 		if (!declared.contains(lhs)) {
 		    declared.add(lhs);
 		    abstractw.write("cat " + lhs + " ;\n");
 		    concw.write("lincat " + lhs + " = " + buildTuple(lhs, c.lhsargs.length) + " ;\n");
-		} 
+		}
 		for (int i = 0; i < c.rhsargs.length; ++i) {
 		    String rhsel = (String) nb.getObjectWithId(GrammarConstants.PREDLABEL, c.rhsnames[i]);
 		    String urhsel = rhsel;
@@ -197,7 +199,7 @@ public class RCGWriterGF implements GrammarWriter<RCG> {
 			if (c.getRhspterm()[i]) {
 			    Integer tagId = lex.getNumberer().getIntWithId(GrammarConstants.PREDLABEL, urhsel);
 			    for (int wordId : lex.getWordsForTag(tagId)) {
-				String word = (String) lex.getNumberer().getObjectWithId(LexiconConstants.LEXWORD, wordId); 
+				String word = (String) lex.getNumberer().getObjectWithId(LexiconConstants.LEXWORD, wordId);
 				word = escape(word);
 				String lexFunName = germanEscape(word) + "_" + rhsel;
 				lexaw.write("fun " + lexFunName + " : " + rhsel + ";\n");
@@ -212,9 +214,9 @@ public class RCGWriterGF implements GrammarWriter<RCG> {
 			    concw.write("lincat " + rhsel + " = " + buildTuple(rhsel, c.rhsargs[i].length) + " ;\n");
 			    abstractw.write("cat " + rhsel + " ;\n");
 			}
-		    } 
+		    }
 		}
-		
+
 
 		// concrete lin
 		String lin = funName;
